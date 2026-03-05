@@ -20,7 +20,7 @@ const GalleryAdmin = () => {
 
     const fetchGallery = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/api/gallery');
+            const response = await axios.get('https://ian-cares-backend.vercel.app/api/gallery');
             setGalleryItems(response.data);
             setLoading(false);
         } catch (error) {
@@ -53,7 +53,7 @@ const GalleryAdmin = () => {
         try {
             const token = localStorage.getItem('adminToken');
             if (editingId) {
-                await axios.put(`http://localhost:5000/api/gallery/${editingId}`, data, {
+                await axios.put(`https://ian-cares-backend.vercel.app/api/gallery/${editingId}`, data, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                         'Authorization': `Bearer ${token}`
@@ -61,7 +61,7 @@ const GalleryAdmin = () => {
                 });
                 alert('Gallery item updated successfully!');
             } else {
-                await axios.post('http://localhost:5000/api/gallery', data, {
+                await axios.post('https://ian-cares-backend.vercel.app/api/gallery', data, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                         'Authorization': `Bearer ${token}`
@@ -98,7 +98,7 @@ const GalleryAdmin = () => {
 
         try {
             const token = localStorage.getItem('adminToken');
-            await axios.delete(`http://localhost:5000/api/gallery/${id}`, {
+            await axios.delete(`https://ian-cares-backend.vercel.app/api/gallery/${id}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -142,6 +142,33 @@ const GalleryAdmin = () => {
                                     <label className="block text-sm font-bold text-[#1A6B96] uppercase tracking-wider">
                                         {editingId ? 'Update Photo (Optional)' : 'Upload Photo'}
                                     </label>
+
+                                    {editingId && !formData.image && galleryItems.find(item => item._id === editingId)?.image && (
+                                        <div className="mb-4">
+                                            <p className="text-xs font-bold text-slate-400 mb-2 uppercase">Current Photo:</p>
+                                            <div className="w-full h-40 rounded-2xl overflow-hidden bg-slate-100 border-2 border-slate-200">
+                                                <img
+                                                    src={galleryItems.find(item => item._id === editingId).image.startsWith('http') ? galleryItems.find(item => item._id === editingId).image : `https://ian-cares-backend.vercel.app${galleryItems.find(item => item._id === editingId).image}`}
+                                                    alt="Current"
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {formData.image && (
+                                        <div className="mb-4">
+                                            <p className="text-xs font-bold text-[#FDB913] mb-2 uppercase">New Photo Selected:</p>
+                                            <div className="w-full h-40 rounded-2xl overflow-hidden bg-slate-100 border-2 border-[#FDB913]/30">
+                                                <img
+                                                    src={URL.createObjectURL(formData.image)}
+                                                    alt="Preview"
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            </div>
+                                        </div>
+                                    )}
+
                                     <label className="flex flex-col items-center justify-center w-full h-40 rounded-2xl bg-slate-50 border border-dashed border-slate-300 hover:border-[#FDB913] hover:bg-slate-100 transition-all cursor-pointer group">
                                         <div className="flex flex-col items-center gap-2 text-slate-500 group-hover:text-[#FDB913]">
                                             <Upload size={24} />
@@ -231,7 +258,7 @@ const GalleryAdmin = () => {
                                             >
                                                 <div className="w-20 h-20 rounded-xl overflow-hidden bg-slate-100 flex-shrink-0">
                                                     <img
-                                                        src={`http://localhost:5000${item.image}`}
+                                                        src={item.image.startsWith('http') ? item.image : `https://ian-cares-backend.vercel.app${item.image}`}
                                                         alt={item.title}
                                                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                                                     />

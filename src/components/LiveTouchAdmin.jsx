@@ -12,7 +12,7 @@ const LiveTouchAdmin = () => {
     useEffect(() => {
         const fetchSettings = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/api/settings');
+                const response = await axios.get('https://ian-cares-backend.vercel.app/api/settings');
                 setLivesTouched(response.data.livesTouched);
             } catch (error) {
                 console.error('Error fetching settings:', error);
@@ -31,7 +31,7 @@ const LiveTouchAdmin = () => {
 
         try {
             const token = localStorage.getItem('adminToken');
-            await axios.post('http://localhost:5000/api/settings', { livesTouched }, {
+            await axios.post('https://ian-cares-backend.vercel.app/api/settings', { livesTouched }, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }

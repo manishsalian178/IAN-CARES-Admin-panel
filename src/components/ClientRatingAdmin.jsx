@@ -12,7 +12,7 @@ const ClientRatingAdmin = () => {
     useEffect(() => {
         const fetchSettings = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/api/settings');
+                const response = await axios.get('https://ian-cares-backend.vercel.app/api/settings');
                 setClientRating(response.data.clientRating || '4.8');
             } catch (error) {
                 console.error('Error fetching settings:', error);
@@ -31,7 +31,7 @@ const ClientRatingAdmin = () => {
 
         try {
             const token = localStorage.getItem('adminToken');
-            await axios.post('http://localhost:5000/api/settings', { clientRating }, {
+            await axios.post('https://ian-cares-backend.vercel.app/api/settings', { clientRating }, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }

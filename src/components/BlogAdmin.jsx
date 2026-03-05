@@ -21,7 +21,7 @@ const BlogAdmin = () => {
 
     const fetchBlogs = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/api/blog');
+            const response = await axios.get('https://ian-cares-backend.vercel.app/api/blog');
             setBlogs(response.data);
             setLoading(false);
         } catch (error) {
@@ -55,7 +55,7 @@ const BlogAdmin = () => {
         try {
             const token = localStorage.getItem('adminToken');
             if (editingId) {
-                await axios.put(`http://localhost:5000/api/blog/${editingId}`, data, {
+                await axios.put(`https://ian-cares-backend.vercel.app/api/blog/${editingId}`, data, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                         'Authorization': `Bearer ${token}`
@@ -63,7 +63,7 @@ const BlogAdmin = () => {
                 });
                 alert('Blog post updated successfully!');
             } else {
-                await axios.post('http://localhost:5000/api/blog', data, {
+                await axios.post('https://ian-cares-backend.vercel.app/api/blog', data, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                         'Authorization': `Bearer ${token}`
@@ -101,7 +101,7 @@ const BlogAdmin = () => {
 
         try {
             const token = localStorage.getItem('adminToken');
-            await axios.delete(`http://localhost:5000/api/blog/${id}`, {
+            await axios.delete(`https://ian-cares-backend.vercel.app/api/blog/${id}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -160,6 +160,33 @@ const BlogAdmin = () => {
                                     <label className="block text-sm font-bold text-[#1A6B96] uppercase tracking-wider">
                                         {editingId ? 'Update Featured Image (Optional)' : 'Featured Image'}
                                     </label>
+
+                                    {editingId && !formData.image && blogs.find(b => b._id === editingId)?.image && (
+                                        <div className="mb-4">
+                                            <p className="text-xs font-bold text-slate-400 mb-2 uppercase">Current Image:</p>
+                                            <div className="w-full h-40 rounded-2xl overflow-hidden bg-slate-100 border-2 border-slate-200">
+                                                <img
+                                                    src={blogs.find(b => b._id === editingId).image.startsWith('http') ? blogs.find(b => b._id === editingId).image : `https://ian-cares-backend.vercel.app${blogs.find(b => b._id === editingId).image}`}
+                                                    alt="Current"
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {formData.image && (
+                                        <div className="mb-4">
+                                            <p className="text-xs font-bold text-[#FDB913] mb-2 uppercase">New Image Selected:</p>
+                                            <div className="w-full h-40 rounded-2xl overflow-hidden bg-slate-100 border-2 border-[#FDB913]/30">
+                                                <img
+                                                    src={URL.createObjectURL(formData.image)}
+                                                    alt="Preview"
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            </div>
+                                        </div>
+                                    )}
+
                                     <label className="flex items-center justify-center w-full h-[58px] px-6 rounded-2xl bg-slate-50 border border-dashed border-slate-300 hover:border-[#FDB913] hover:bg-slate-100 transition-all cursor-pointer group">
                                         <div className="flex items-center gap-2 text-slate-500 group-hover:text-[#FDB913]">
                                             <Upload size={20} />
@@ -260,7 +287,7 @@ const BlogAdmin = () => {
                                                 <div className="w-20 h-20 rounded-xl overflow-hidden bg-slate-100 flex-shrink-0">
                                                     {blog.image ? (
                                                         <img
-                                                            src={`http://localhost:5000${blog.image}`}
+                                                            src={blog.image.startsWith('http') ? blog.image : `https://ian-cares-backend.vercel.app${blog.image}`}
                                                             alt={blog.title}
                                                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                                                         />
