@@ -15,6 +15,7 @@ const JourneyAdmin = () => {
     const [journeys, setJourneys] = useState([]);
     const [loading, setLoading] = useState(true);
     const [editingId, setEditingId] = useState(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const formRef = useRef(null);
 
     useEffect(() => {
@@ -51,6 +52,7 @@ const JourneyAdmin = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsSubmitting(true);
 
         const data = new FormData();
         data.append('name', formData.name);
@@ -83,12 +85,14 @@ const JourneyAdmin = () => {
                 });
                 alert('Journey entry saved successfully!');
             }
-            // Reset form
+            // Reset form and reload
             handleCancel();
-            fetchJourneys(); // Refresh the list
+            window.location.reload();
         } catch (error) {
             console.error('Error saving journey:', error);
             alert('Error saving journey entry: ' + (error.response?.data?.error || error.message));
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -225,31 +229,43 @@ const JourneyAdmin = () => {
                                     />
                                 </div>
 
-                                <div className="space-y-2">
-                                    <label className="block text-sm font-bold text-[#1A6B96] uppercase tracking-wider">
-                                        Video URL (YouTube/Vimeo Embed Link)
-                                    </label>
-                                    <input
-                                        type="text"
-                                        name="videoUrl"
-                                        value={formData.videoUrl}
-                                        onChange={handleInputChange}
-                                        placeholder="https://www.youtube.com/embed/..."
-                                        className="w-full px-6 py-4 rounded-2xl bg-slate-50 border border-slate-100 focus:outline-none focus:ring-2 focus:ring-[#1A6B96]/20 transition-all text-slate-900 font-medium"
-                                    />
-                                </div>
+                                <div className="space-y-4 p-6 bg-slate-50 rounded-2xl border border-slate-100">
+                                    <div className="space-y-2">
+                                        <label className="block text-sm font-bold text-[#1A6B96] uppercase tracking-wider">
+                                            Video Upload (Local File)
+                                        </label>
+                                        <label className="flex items-center justify-center w-full h-[58px] px-6 rounded-2xl bg-white border border-dashed border-slate-300 hover:border-[#FDB913] hover:bg-slate-50 transition-all cursor-pointer group">
+                                            <div className="flex items-center gap-2 text-slate-500 group-hover:text-[#FDB913]">
+                                                <Upload size={20} />
+                                                <span className="text-sm font-medium">{formData.video ? formData.video.name : 'Choose video file'}</span>
+                                            </div>
+                                            <input type="file" className="hidden" onChange={handleVideoChange} accept="video/*" />
+                                        </label>
+                                    </div>
 
-                                <div className="space-y-2">
-                                    <label className="block text-sm font-bold text-[#1A6B96] uppercase tracking-wider">
-                                        OR Upload Local Video
-                                    </label>
-                                    <label className="flex items-center justify-center w-full h-[58px] px-6 rounded-2xl bg-slate-50 border border-dashed border-slate-300 hover:border-[#FDB913] hover:bg-slate-100 transition-all cursor-pointer group">
-                                        <div className="flex items-center gap-2 text-slate-500 group-hover:text-[#FDB913]">
-                                            <Upload size={20} />
-                                            <span className="text-sm font-medium">{formData.video ? formData.video.name : 'Choose video file'}</span>
+                                    <div className="relative">
+                                        <div className="absolute inset-0 flex items-center">
+                                            <div className="w-full border-t border-slate-200"></div>
                                         </div>
-                                        <input type="file" className="hidden" onChange={handleVideoChange} accept="video/*" />
-                                    </label>
+                                        <div className="relative flex justify-center text-xs uppercase">
+                                            <span className="bg-slate-50 px-2 text-slate-400 font-bold">Or Embed</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label className="block text-sm font-bold text-[#1A6B96] uppercase tracking-wider">
+                                            Embed Link (YouTube/Vimeo)
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="videoUrl"
+                                            value={formData.videoUrl}
+                                            onChange={handleInputChange}
+                                            disabled={!!formData.video}
+                                            placeholder={formData.video ? "File selected (Link disabled)" : "https://www.youtube.com/embed/..."}
+                                            className={`w-full px-6 py-4 rounded-2xl bg-white border border-slate-100 focus:outline-none focus:ring-2 focus:ring-[#1A6B96]/20 transition-all text-slate-900 font-medium ${formData.video ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                        />
+                                    </div>
                                 </div>
 
                                 <div className="space-y-2">
@@ -289,9 +305,17 @@ const JourneyAdmin = () => {
                                     )}
                                     <button
                                         type="submit"
-                                        className="bg-[#1A6B96] text-white px-8 py-3 rounded-full font-bold shadow-xl hover:bg-[#155a82] transition-all flex items-center gap-2 transform hover:scale-105 active:scale-95"
+                                        disabled={isSubmitting}
+                                        className={`bg-[#1A6B96] text-white px-8 py-3 rounded-full font-bold shadow-xl hover:bg-[#155a82] transition-all flex items-center gap-2 transform hover:scale-105 active:scale-95 ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
                                     >
-                                        {editingId ? 'Update Journey' : 'Save Journey'} <ArrowRight size={20} />
+                                        {isSubmitting ? (
+                                            <>
+                                                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                                                Saving...
+                                            </>
+                                        ) : (
+                                            <>{editingId ? 'Update Journey' : 'Save Journey'} <ArrowRight size={20} /></>
+                                        )}
                                     </button>
                                 </div>
                             </form>
