@@ -79,7 +79,7 @@ const GalleryAdmin = () => {
             }
             // Reset form and reload
             handleCancel();
-            window.location.reload();
+            fetchGallery();
         } catch (error) {
             console.error('Error saving gallery:', error);
             alert('Error saving gallery item: ' + (error.response?.data?.error || error.message));

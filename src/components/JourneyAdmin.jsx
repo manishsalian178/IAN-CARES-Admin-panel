@@ -87,7 +87,7 @@ const JourneyAdmin = () => {
             }
             // Reset form and reload
             handleCancel();
-            window.location.reload();
+            fetchJourneys();
         } catch (error) {
             console.error('Error saving journey:', error);
             alert('Error saving journey entry: ' + (error.response?.data?.error || error.message));

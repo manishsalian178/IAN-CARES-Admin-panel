@@ -87,7 +87,7 @@ const BlogAdmin = () => {
             }
             // Reset form and reload
             handleCancel();
-            window.location.reload();
+            fetchBlogs();
         } catch (error) {
             console.error('Error saving blog:', error);
             alert('Error saving blog post: ' + (error.response?.data?.error || error.message));
