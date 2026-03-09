@@ -7,9 +7,7 @@ const GalleryAdmin = () => {
     const [formData, setFormData] = useState({
         title: '',
         category: '',
-        videoUrl: '',
         image: null,
-        video: null
     });
     const [galleryItems, setGalleryItems] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -50,12 +48,8 @@ const GalleryAdmin = () => {
         const data = new FormData();
         data.append('title', formData.title);
         data.append('category', formData.category);
-        data.append('videoUrl', formData.videoUrl);
         if (formData.image) {
             data.append('image', formData.image);
-        }
-        if (formData.video) {
-            data.append('video', formData.video);
         }
 
         try {
@@ -93,16 +87,14 @@ const GalleryAdmin = () => {
         setFormData({
             title: item.title,
             category: item.category,
-            videoUrl: item.videoUrl || '',
             image: null,
-            video: null
         });
         formRef.current?.scrollIntoView({ behavior: 'smooth' });
     };
 
     const handleCancel = () => {
         setEditingId(null);
-        setFormData({ title: '', category: '', videoUrl: '', image: null, video: null });
+        setFormData({ title: '', category: '', image: null });
     };
 
     const handleDelete = async (id) => {
@@ -205,45 +197,19 @@ const GalleryAdmin = () => {
                                     />
                                 </div>
 
-                                <div className="space-y-4 p-6 bg-slate-50 rounded-2xl border border-slate-100">
+                                <div className="space-y-4">
                                     <div className="space-y-2">
                                         <label className="block text-sm font-bold text-[#1A6B96] uppercase tracking-wider">
-                                            Video Upload (Optional)
-                                        </label>
-                                        <label className="flex items-center justify-center w-full h-[58px] px-6 rounded-2xl bg-white border border-dashed border-slate-300 hover:border-[#FDB913] hover:bg-slate-50 transition-all cursor-pointer group">
-                                            <div className="flex items-center gap-2 text-slate-500 group-hover:text-[#FDB913]">
-                                                <Upload size={20} />
-                                                <span className="text-sm font-medium">{formData.video ? formData.video.name : 'Choose video file'}</span>
-                                            </div>
-                                            <input type="file" className="hidden" onChange={(e) => {
-                                                if (e.target.files && e.target.files[0]) {
-                                                    setFormData(prev => ({ ...prev, video: e.target.files[0] }));
-                                                }
-                                            }} accept="video/*" />
-                                        </label>
-                                    </div>
-
-                                    <div className="relative">
-                                        <div className="absolute inset-0 flex items-center">
-                                            <div className="w-full border-t border-slate-200"></div>
-                                        </div>
-                                        <div className="relative flex justify-center text-xs uppercase">
-                                            <span className="bg-slate-50 px-2 text-slate-400 font-bold">Or Embed</span>
-                                        </div>
-                                    </div>
-
-                                    <div className="space-y-2">
-                                        <label className="block text-sm font-bold text-[#1A6B96] uppercase tracking-wider">
-                                            Embed Link (YouTube/Vimeo)
+                                            Title
                                         </label>
                                         <input
                                             type="text"
-                                            name="videoUrl"
-                                            value={formData.videoUrl}
+                                            name="title"
+                                            value={formData.title}
                                             onChange={handleInputChange}
-                                            disabled={!!formData.video}
-                                            placeholder={formData.video ? "File selected (Link disabled)" : "https://www.youtube.com/embed/..."}
-                                            className={`w-full px-6 py-4 rounded-2xl bg-white border border-slate-100 focus:outline-none focus:ring-2 focus:ring-[#1A6B96]/20 transition-all text-slate-900 font-medium ${formData.video ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                            placeholder="Enter item title"
+                                            className="w-full px-6 py-4 rounded-2xl bg-slate-50 border border-slate-100 focus:outline-none focus:ring-2 focus:ring-[#1A6B96]/20 transition-all text-slate-900 font-medium"
+                                            required
                                         />
                                     </div>
                                 </div>
